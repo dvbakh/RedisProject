@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цитаты</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lora', serif;
+            background: url('https://avatars.mds.yandex.net/get-entity_search/2238866/1007894976/S600xU_2x') no-repeat center center fixed;
+            background-size: cover;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: -1;
+        }
+
+        h1 {
+            margin: 20px;
+            font-size: 36px;
+            font-weight: 600;
+            color: #f0f0f0;
+        }
+
+        #quotes {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .quote-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .quote-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
+        }
+
+        .quote-text {
+            font-size: 22px;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .category {
+            font-size: 18px;
+            color: #b0b0b0;
+            font-weight: 600;
+        }
+
+        .button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 20px;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.3s, transform 0.2s;
+            font-family: 'Lora', serif;
+            backdrop-filter: blur(5px);
+        }
+
+        .button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .button-container {
+            margin: 20px;
+        }
+
+        .random-quote-container {
+            margin-top: 30px;
+            padding-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Лучшие цитаты Джейсона Стетхема</h1>
+
+<div class="button-container">
+    <button class="button" onclick="loadQuotes('любовь')">Любовь</button>
+    <button class="button" onclick="loadQuotes('жизнь')">Жизнь</button>
+    <button class="button" onclick="loadQuotes('успех')">Успех</button>
+    <button class="button" onclick="loadQuotes('мудрость')">Мудрость</button>
+    <button class="button" onclick="loadQuotes('мотивация')">Мотивация</button>
+</div>
+
+<div id="quotes">
+    {% for quote in quotes %}
+        <div class="quote-card">
+            <p class="quote-text">"{{ quote.text }}"</p>
+            <p class="category">{{ quote.category }}</p>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="random-quote-container">
+    <button class="button" onclick="getRandomQuote()">Случайная цитата</button>
+</div>
+
+<script>
+    function loadQuotes(category) {
+        fetch(`/quotes/${category}`)
+            .then(response => response.json())
+            .then(data => {
+                let quotesDiv = document.getElementById('quotes');
+                quotesDiv.innerHTML = '';
+                data.forEach(quote => {
+                    let quoteElement = document.createElement('div');
+                    quoteElement.classList.add('quote-card');
+                    quoteElement.innerHTML = `
+                        <p class="quote-text">"${quote.text}"</p>
+                        <p class="category">${quote.category}</p>
+                    `;
+                    quotesDiv.appendChild(quoteElement);
+                });
+            });
+    }
+
+    function getRandomQuote() {
+        fetch('/random_quote')
+            .then(response => response.json())
+            .then(data => {
+                let quotesDiv = document.getElementById('quotes');
+                quotesDiv.innerHTML = '';
+                let quoteElement = document.createElement('div');
+                quoteElement.classList.add('quote-card');
+                quoteElement.innerHTML = `
+                    <p class="quote-text">"${data.text}"</p>
+                    <p class="category">${data.category}</p>
+                `;
+                quotesDiv.appendChild(quoteElement);
+            });
+    }
+</script>
+
+</body>
+</html>
