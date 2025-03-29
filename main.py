@@ -3,6 +3,7 @@ import redis_db as db
 
 app = Flask(__name__)
 
+# Начальный экран
 @app.route('/')
 def index():
     random_quotes = db.get_random_quotes(10)
